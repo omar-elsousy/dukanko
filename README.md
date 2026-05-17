@@ -1,17 +1,36 @@
-# dukan_ko
+# Dukanko
 
-A new Flutter project.
+A Flutter mobile sales application scaffold connected to the Dukanko Laravel API.
 
-## Getting Started
+## Naming
 
-This project is a starting point for a Flutter application.
+The Flutter package/project name remains `dukan_ko` in `pubspec.yaml`. The user-facing app label is `Dukanko` on Android/iOS, which is safe because display labels do not need to match the Dart package name.
 
-A few resources to get you started if this is your first Flutter project:
+## API configuration
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+The default API base URL is configured in `lib/core/network/api_config.dart`:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```dart
+http://10.1.104.82:81/Online-application/public/api
+```
+
+You can override it at build/run time with:
+
+```bash
+flutter run --dart-define=API_BASE_URL=https://your-host.example.com/api
+```
+
+## Implemented mobile foundation
+
+- Login by mobile/password using the provided test credentials.
+- Reusable `ApiClient` with JSON requests, bearer token support, timeout handling, and Laravel-style error parsing.
+- Home/catalog screen for categories and products.
+- Product details screen.
+- Local cart with quantity editing.
+- Order creation request.
+- Orders and profile tabs.
+- Calm Material 3 theme for a simple sales app look.
+
+## Backend notes
+
+The private Swagger URL and the GitHub clone were not reachable from this execution environment, so endpoint paths are isolated in `ApiEndpoints` for quick adjustment when the OpenAPI JSON/YAML is available.
