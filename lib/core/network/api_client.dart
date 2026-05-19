@@ -1,14 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'dart:io';
 
 import 'api_config.dart';
 import 'api_exception.dart';
 
 class ApiClient {
-  ApiClient({http.Client? client}) : _client = client ?? http.Client();
+  ApiClient({HttpClient? httpClient}) : _httpClient = httpClient ?? HttpClient();
 
-  final http.Client _client;
+  final HttpClient _httpClient;
   String? _token;
 
   bool get isAuthenticated => _token != null && _token!.isNotEmpty;
@@ -34,49 +34,27 @@ class ApiClient {
   }
 
   Future<dynamic> _send(
-      String method,
-      String path, {
-        Map<String, dynamic>? query,
-        Map<String, dynamic>? body,
-      }) async {
-    final uri = ApiConfig.uri(path, query);
+    String method,
+    String path, {
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? body,
+  }) async {
+    final request = await _httpClient
+        .openUrl(method, ApiConfig.uri(path, query))
+        .timeout(const Duration(seconds: 20));
 
-    final headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      if (_token != null) 'Authorization': 'Bearer $_token',
-    };
-
-    final bodyEncoded = body != null ? jsonEncode(body) : null;
-
-    final http.Response response;
-
-    switch (method) {
-      case 'GET':
-        response = await _client
-            .get(uri, headers: headers)
-            .timeout(const Duration(seconds: 30));
-        break;
-      case 'POST':
-        response = await _client
-            .post(uri, headers: headers, body: bodyEncoded)
-            .timeout(const Duration(seconds: 30));
-        break;
-      case 'PUT':
-        response = await _client
-            .put(uri, headers: headers, body: bodyEncoded)
-            .timeout(const Duration(seconds: 30));
-        break;
-      case 'DELETE':
-        response = await _client
-            .delete(uri, headers: headers, body: bodyEncoded)
-            .timeout(const Duration(seconds: 30));
-        break;
-      default:
-        throw ApiException('Unsupported method: $method');
+    request.headers.contentType = ContentType.json;
+    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+    if (_token != null) {
+      request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $_token');
     }
 
-    final text = response.body;
+    if (body != null) {
+      request.write(jsonEncode(body));
+    }
+
+    final response = await request.close().timeout(const Duration(seconds: 30));
+    final text = await response.transform(utf8.decoder).join();
     final payload = text.isEmpty ? null : jsonDecode(text);
 
     if (response.statusCode < 200 || response.statusCode >= 300) {

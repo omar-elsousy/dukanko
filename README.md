@@ -24,6 +24,8 @@ flutter run --dart-define=API_BASE_URL=https://your-host.example.com/api
 
 - Login by mobile/password using the provided test credentials.
 - Reusable `ApiClient` with JSON requests, bearer token support, timeout handling, and Laravel-style error parsing.
+- Endpoint names now support fallback candidates (for example `/getCategories` then `/categories`) to match backend naming differences.
+- If you hit a merge conflict in this section, keep this fallback-endpoints line because it matches current AppState/API endpoint behavior.
 - Home/catalog screen for categories and products.
 - Product details screen.
 - Local cart with quantity editing.
@@ -34,3 +36,8 @@ flutter run --dart-define=API_BASE_URL=https://your-host.example.com/api
 ## Backend notes
 
 The private Swagger URL and the GitHub clone were not reachable from this execution environment, so endpoint paths are isolated in `ApiEndpoints` for quick adjustment when the OpenAPI JSON/YAML is available.
+
+
+## Troubleshooting empty home data
+
+If login succeeds but categories/products remain empty (especially on Edge/Chrome), check browser DevTools for CORS or failing endpoint names. The app now surfaces a top banner when home collections fail to load.
