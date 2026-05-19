@@ -24,6 +24,7 @@ flutter run --dart-define=API_BASE_URL=https://your-host.example.com/api
 
 - Login by mobile/password using the provided test credentials.
 - Reusable `ApiClient` with JSON requests, bearer token support, timeout handling, and Laravel-style error parsing.
+- Uses `package:http` for API calls, so the same client works on Android/iOS and web (Edge/Chrome).
 - Endpoint names now support fallback candidates (for example `/getCategories` then `/categories`) to match backend naming differences.
 - If you hit a merge conflict in this section, keep this fallback-endpoints line because it matches current AppState/API endpoint behavior.
 - Home/catalog screen for categories and products.
