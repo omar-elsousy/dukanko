@@ -39,7 +39,7 @@ class AppState extends ChangeNotifier {
   Future<void> register({
     required String mobile,
     required String password,
-    String? name,
+    required String passwordConfirmation,
   }) async {
     await _guard(() async {
       await apiClient.post(
@@ -47,7 +47,7 @@ class AppState extends ChangeNotifier {
         body: {
           'mobile': mobile,
           'password': password,
-          if (name != null && name.trim().isNotEmpty) 'name': name.trim(),
+          'password_confirmation': passwordConfirmation,
         },
       );
     });

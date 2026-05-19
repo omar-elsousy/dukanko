@@ -124,10 +124,10 @@ class _CatalogTabState extends State<_CatalogTab> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 1.45,
+                childAspectRatio: 0.9,
               ),
               itemCount: filteredCategories.length,
               itemBuilder: (_, index) {
@@ -139,25 +139,25 @@ class _CatalogTabState extends State<_CatalogTab> {
                   ),
                   child: Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
                         children: [
                           Container(
-                            width: 44,
-                            height: 44,
+                            width: 36,
+                            height: 36,
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.primaryContainer,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(Icons.image_outlined),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(height: 8),
                           Expanded(
                             child: Text(
                               category.title,
-                              maxLines: 2,
+                              maxLines: 3,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.w700),
+                              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
                             ),
                           ),
                         ],
