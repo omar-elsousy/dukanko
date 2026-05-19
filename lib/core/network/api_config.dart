@@ -51,4 +51,16 @@ class ApiEndpoints {
     '/createOrder',
     '/orders',
   ];
+
+  static const List<String> register = [
+    '/register',
+    '/userRegister',
+    '/createAccount',
+  ];
+
+  static const List<String> productsByCategory = [
+    '/getProductsByCategory',
+    '/productsByCategory',
+    '/getCategoryProducts',
+  ];
 }

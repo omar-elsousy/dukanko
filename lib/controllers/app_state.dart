@@ -79,6 +79,45 @@ class AppState extends ChangeNotifier {
     });
   }
 
+
+  Future<void> register({
+    required String mobile,
+    required String password,
+    String? name,
+  }) async {
+    await _guard(() async {
+      await _postFirstSuccess(
+        ApiEndpoints.register,
+        body: {
+          'mobile': mobile,
+          'password': password,
+          if (name != null && name.trim().isNotEmpty) 'name': name.trim(),
+        },
+      );
+    });
+  }
+
+  Future<List<ApiItem>> loadProductsByCategory(ApiItem category) async {
+    try {
+      final payload = await _getFirstSuccessWithQuery(
+        ApiEndpoints.productsByCategory,
+        {
+          'category_id': category.id,
+          'categoryId': category.id,
+          'id': category.id,
+        },
+      );
+      return parseItems(payload);
+    } catch (_) {
+      return products
+          .where(
+            (item) =>
+                item.subtitle?.toLowerCase() == category.title.toLowerCase() ||
+                item.raw['category_id']?.toString() == category.id,
+          )
+          .toList();
+    }
+  }
   Future<void> checkout() async {
     if (cart.isEmpty) return;
     await _guard(() async {
@@ -158,6 +197,23 @@ class AppState extends ChangeNotifier {
     } catch (error) {
       return _LoadCollectionResult(label: label, payload: const [], success: false);
     }
+  }
+
+
+  Future<dynamic> _getFirstSuccessWithQuery(
+    List<String> paths,
+    Map<String, dynamic> query,
+  ) async {
+    Object? lastError;
+    for (final path in paths) {
+      try {
+        return await apiClient.get(path, query: query);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    if (lastError != null) throw lastError;
+    throw StateError('No GET endpoint candidates were provided for ${paths.join(', ')}.');
   }
 
   Future<dynamic> _getFirstSuccess(List<String> paths) async {

@@ -8,6 +8,48 @@ class LoginScreen extends StatefulWidget {
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
+
+  Future<void> _openRegisterDialog() async {
+    final nameController = TextEditingController();
+    final mobileController = TextEditingController();
+    final passwordController = TextEditingController();
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Create account'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Name')),
+            const SizedBox(height: 8),
+            TextField(controller: mobileController, decoration: const InputDecoration(labelText: 'Mobile')),
+            const SizedBox(height: 8),
+            TextField(controller: passwordController, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () async {
+              await AppScope.of(context).register(
+                name: nameController.text,
+                mobile: mobileController.text.trim(),
+                password: passwordController.text,
+              );
+              if (!context.mounted) return;
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Account created. You can login now.')),
+              );
+            },
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -114,6 +156,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           )
                         : const Text('Login'),
                   ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: state.isLoading ? null : _openRegisterDialog,
+                    child: const Text('Create account'),
+                  ),
                 ],
               ),
             ),
@@ -130,4 +177,46 @@ class _LoginScreenState extends State<LoginScreen> {
       password: _passwordController.text,
     );
   }
+
+  Future<void> _openRegisterDialog() async {
+    final nameController = TextEditingController();
+    final mobileController = TextEditingController();
+    final passwordController = TextEditingController();
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Create account'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Name')),
+            const SizedBox(height: 8),
+            TextField(controller: mobileController, decoration: const InputDecoration(labelText: 'Mobile')),
+            const SizedBox(height: 8),
+            TextField(controller: passwordController, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () async {
+              await AppScope.of(context).register(
+                name: nameController.text,
+                mobile: mobileController.text.trim(),
+                password: passwordController.text,
+              );
+              if (!context.mounted) return;
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Account created. You can login now.')),
+              );
+            },
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
