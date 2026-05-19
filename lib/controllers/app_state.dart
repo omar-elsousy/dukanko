@@ -25,7 +25,7 @@ class AppState extends ChangeNotifier {
 
   Future<void> login({required String mobile, required String password}) async {
     await _guard(() async {
-      final payload = await apiClient.post(
+      final payload = await _postFirstSuccess(
         ApiEndpoints.login,
         body: {'mobile': mobile, 'password': password},
       );
@@ -39,9 +39,9 @@ class AppState extends ChangeNotifier {
   Future<void> loadHome() async {
     await _guard(() async {
       final results = await Future.wait<dynamic>([
-        apiClient.get(ApiEndpoints.categories).catchError((_) => []),
-        apiClient.get(ApiEndpoints.products).catchError((_) => []),
-        apiClient.get(ApiEndpoints.orders).catchError((_) => []),
+        _getFirstSuccess(ApiEndpoints.categories).catchError((_) => []),
+        _getFirstSuccess(ApiEndpoints.products).catchError((_) => []),
+        _getFirstSuccess(ApiEndpoints.orders).catchError((_) => []),
       ]);
 
       categories
@@ -60,8 +60,8 @@ class AppState extends ChangeNotifier {
   Future<void> checkout() async {
     if (cart.isEmpty) return;
     await _guard(() async {
-      await apiClient.post(
-        ApiEndpoints.orders,
+      await _postFirstSuccess(
+        ApiEndpoints.createOrder,
         body: {
           'items': cart
               .map((line) => {
@@ -122,6 +122,36 @@ class AppState extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+
+  Future<dynamic> _getFirstSuccess(List<String> paths) async {
+    Object? lastError;
+    for (final path in paths) {
+      try {
+        return await apiClient.get(path);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    if (lastError != null) throw lastError;
+    throw StateError('No GET endpoint candidates were provided.');
+  }
+
+  Future<dynamic> _postFirstSuccess(
+    List<String> paths, {
+    Map<String, dynamic>? body,
+  }) async {
+    Object? lastError;
+    for (final path in paths) {
+      try {
+        return await apiClient.post(path, body: body);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    if (lastError != null) throw lastError;
+    throw StateError('No POST endpoint candidates were provided.');
   }
 
   String? _extractToken(dynamic payload) {
