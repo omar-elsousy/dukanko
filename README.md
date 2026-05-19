@@ -42,3 +42,13 @@ The private Swagger URL and the GitHub clone were not reachable from this execut
 ## Troubleshooting empty home data
 
 If login succeeds but categories/products remain empty (especially on Edge/Chrome), check browser DevTools for CORS or failing endpoint names. The app now surfaces a top banner when home collections fail to load.
+
+
+## Exact API routes currently used
+
+- `POST /login`
+- `POST /register`
+- `POST /logout`
+- `GET /getCategories`
+- `GET /getSections`
+- `GET /getProductsByCategory`

@@ -26,41 +26,10 @@ class ApiConfig {
 class ApiEndpoints {
   const ApiEndpoints._();
 
-  static const List<String> login = [
-    '/login',
-    '/userLogin',
-    '/loginUser',
-  ];
-
-  static const List<String> categories = [
-    '/getCategories',
-    '/categories',
-  ];
-
-  static const List<String> products = [
-    '/getProducts',
-    '/products',
-  ];
-
-  static const List<String> orders = [
-    '/getOrders',
-    '/orders',
-  ];
-
-  static const List<String> createOrder = [
-    '/createOrder',
-    '/orders',
-  ];
-
-  static const List<String> register = [
-    '/register',
-    '/userRegister',
-    '/createAccount',
-  ];
-
-  static const List<String> productsByCategory = [
-    '/getProductsByCategory',
-    '/productsByCategory',
-    '/getCategoryProducts',
-  ];
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String logout = '/logout';
+  static const String categories = '/getCategories';
+  static const String sections = '/getSections';
+  static const String productsByCategory = '/getProductsByCategory';
 }
