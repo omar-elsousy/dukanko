@@ -26,29 +26,11 @@ class ApiConfig {
 class ApiEndpoints {
   const ApiEndpoints._();
 
-  static const List<String> login = [
-    '/login',
-    '/userLogin',
-    '/loginUser',
-  ];
-
-  static const List<String> categories = [
-    '/getCategories',
-    '/categories',
-  ];
-
-  static const List<String> products = [
-    '/getProducts',
-    '/products',
-  ];
-
-  static const List<String> orders = [
-    '/getOrders',
-    '/orders',
-  ];
-
-  static const List<String> createOrder = [
-    '/createOrder',
-    '/orders',
-  ];
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String profile = '/profile';
+  static const String categories = '/categories';
+  static const String products = '/products';
+  static const String cart = '/cart';
+  static const String orders = '/orders';
 }
