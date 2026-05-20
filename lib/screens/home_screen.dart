@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../controllers/app_scope.dart';
@@ -107,13 +109,7 @@ class _CatalogTabState extends State<_CatalogTab> {
           if (state.sections.isEmpty)
             const _EmptyState(message: 'No sections returned yet.')
           else
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: state.sections
-                  .map((section) => Chip(label: Text(section.title), backgroundColor: Colors.white, side: BorderSide.none))
-                  .toList(),
-            ),
+            _SectionsCarousel(sections: state.sections),
           const SizedBox(height: 22),
           _SectionHeader(title: 'Categories', action: '${filteredCategories.length} found'),
           const SizedBox(height: 10),
@@ -139,17 +135,24 @@ class _CatalogTabState extends State<_CatalogTab> {
                   ),
                   child: Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         children: [
                           Container(
-                            width: 36,
-                            height: 36,
+                            width: 32,
+                            height: 32,
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Icon(Icons.image_outlined),
+                            clipBehavior: Clip.antiAlias,
+                            child: category.imageUrl == null
+                                ? const Icon(Icons.image_outlined, size: 18)
+                                : Image.network(
+                                    category.imageUrl!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => const Icon(Icons.image_outlined, size: 18),
+                                  ),
                           ),
                           const SizedBox(height: 8),
                           Expanded(
@@ -157,6 +160,7 @@ class _CatalogTabState extends State<_CatalogTab> {
                               category.title,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                               style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
                             ),
                           ),
@@ -169,6 +173,110 @@ class _CatalogTabState extends State<_CatalogTab> {
             ),
         ],
       ),
+    );
+  }
+}
+
+class _SectionsCarousel extends StatefulWidget {
+  const _SectionsCarousel({required this.sections});
+
+  final List<ApiItem> sections;
+
+  @override
+  State<_SectionsCarousel> createState() => _SectionsCarouselState();
+}
+
+class _SectionsCarouselState extends State<_SectionsCarousel> {
+  final PageController _controller = PageController(viewportFraction: 1);
+  Timer? _timer;
+  int _current = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoPlay();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SectionsCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.sections.length != widget.sections.length) {
+      _current = 0;
+      _startAutoPlay();
+    }
+  }
+
+  void _startAutoPlay() {
+    _timer?.cancel();
+    if (widget.sections.length <= 1) return;
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!mounted) return;
+      final next = (_current + 1) % widget.sections.length;
+      _controller.animateToPage(next, duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 160,
+          child: PageView.builder(
+            controller: _controller,
+            onPageChanged: (value) => setState(() => _current = value),
+            itemCount: widget.sections.length,
+            itemBuilder: (_, index) {
+              final section = widget.sections[index];
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: section.imageUrl == null
+                    ? Container(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        child: const Center(child: Icon(Icons.image_outlined, size: 36)),
+                      )
+                    : Image.network(
+                        section.imageUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          child: const Center(child: Icon(Icons.broken_image_outlined, size: 36)),
+                        ),
+                      ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            widget.sections.length,
+            (index) => GestureDetector(
+              onTap: () => _controller.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                width: _current == index ? 20 : 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: _current == index
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.primary.withValues(alpha: .28),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

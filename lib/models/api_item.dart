@@ -18,7 +18,7 @@ class ApiItem {
   final Map<String, dynamic> raw;
 
   factory ApiItem.fromJson(Map<String, dynamic> json) {
-    final id = _first(json, ['id', 'code', 'item_id', 'product_id']) ?? '';
+    final id = _first(json, ['id', 'family_id', 'code', 'item_id', 'product_id']) ?? '';
     final title = _first(json, [
           'name',
           'title',
@@ -27,7 +27,7 @@ class ApiItem {
           'category_name',
           'description_ar',
         ]) ??
-        'Item';
+        'Category ${id.toString()}';
     final subtitle = _first(json, ['category', 'brand', 'short_description']);
     final description = _first(json, ['description', 'details', 'notes']);
     final imageUrl = _first(json, ['image', 'image_url', 'photo', 'thumbnail']);
