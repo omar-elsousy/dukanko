@@ -151,6 +151,7 @@ class _CatalogTabState extends State<_CatalogTab> {
                                 : Image.network(
                                     category.imageUrl!,
                                     fit: BoxFit.cover,
+                                    webHtmlElementStrategy: WebHtmlElementStrategy.always,
                                     errorBuilder: (_, __, ___) => const Icon(Icons.image_outlined, size: 18),
                                   ),
                           ),
@@ -245,6 +246,7 @@ class _SectionsCarouselState extends State<_SectionsCarousel> {
                     : Image.network(
                         section.imageUrl!,
                         fit: BoxFit.cover,
+                        webHtmlElementStrategy: WebHtmlElementStrategy.always,
                         errorBuilder: (_, __, ___) => Container(
                           color: Theme.of(context).colorScheme.primaryContainer,
                           child: const Center(child: Icon(Icons.broken_image_outlined, size: 36)),
