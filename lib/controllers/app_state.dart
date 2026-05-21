@@ -338,6 +338,26 @@ class AppState extends ChangeNotifier {
     return payload['data'] ?? {};
   }
 
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    await _guard(() async {
+      final payload = await apiClient.post(
+        ApiEndpoints.changePassword,
+        body: {
+          'current_password': currentPassword,
+          'new_password': newPassword,
+          'new_password_confirmation': confirmPassword,
+        },
+      );
+      // إذا نجح الطلب، السيرفر يرجع البيانات الجديدة أو رسالة نجاح
+      // نضع رسالة نجاح في الـ error (أو متغير مخصص) ليتمكن الـ UI من عرضها
+      error = payload['message'] ?? 'Password changed successfully';
+    });
+  }
+
   Future<void> logout() async {
     await _guard(() async {
       await apiClient.post(ApiEndpoints.logout).catchError((_) => null);

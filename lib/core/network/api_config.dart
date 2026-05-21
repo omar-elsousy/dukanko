@@ -47,4 +47,5 @@ class ApiEndpoints {
   static const String addToFavourites = '/addToFavourites';
   static const String removeFromFavourites = '/removeFromFavourites';
   static const String getFavourites = '/getFavourites';
+  static const String changePassword = '/changePassword';
 }
