@@ -1,3 +1,5 @@
+import '../core/network/api_config.dart';
+
 class ApiItem {
   const ApiItem({
     required this.id,
@@ -18,7 +20,7 @@ class ApiItem {
   final Map<String, dynamic> raw;
 
   factory ApiItem.fromJson(Map<String, dynamic> json) {
-    final id = _first(json, ['id', 'family_id', 'code', 'item_id', 'product_id']) ?? '';
+    final id = _first(json, ['product_id', 'id', 'order_id', 'family_id', 'code', 'item_id']) ?? '';
     final title = _first(json, [
           'name',
           'title',
@@ -27,18 +29,29 @@ class ApiItem {
           'category_name',
           'description_ar',
         ]) ??
-        'Category ${id.toString()}';
-    final subtitle = _first(json, ['category', 'brand', 'short_description']);
+        'Order #${id.toString()}';
+    final subtitle = _first(json, ['status', 'category', 'brand', 'short_description', 'created_at']);
     final description = _first(json, ['description', 'details', 'notes']);
-    final imageUrl = _first(json, ['image', 'image_url', 'photo', 'thumbnail']);
-    final priceValue = _first(json, ['price', 'sell_price', 'unit_price', 'amount']);
+    var imageUrl = _first(json, ['image', 'image_url', 'photo', 'thumbnail'])?.toString();
+    final priceValue = _first(json, ['price', 'sell_price', 'unit_price', 'amount', 'final_price', 'total_price']);
+
+    if (imageUrl != null && imageUrl.isNotEmpty && !imageUrl.startsWith('http')) {
+      final base = ApiConfig.baseImageUrl;
+      final separator = imageUrl.startsWith('/') ? '' : '/';
+      imageUrl = '$base$separator$imageUrl';
+    }
+
+    // تأكيد أن الحقل الفارغ أو null يتم التعامل معه بشكل صحيح
+    if (imageUrl != null && (imageUrl.isEmpty || imageUrl == 'null')) {
+      imageUrl = null;
+    }
 
     return ApiItem(
       id: id.toString(),
       title: title.toString(),
       subtitle: subtitle?.toString(),
       description: description?.toString(),
-      imageUrl: imageUrl?.toString(),
+      imageUrl: imageUrl,
       price: double.tryParse(priceValue?.toString() ?? ''),
       raw: json,
     );

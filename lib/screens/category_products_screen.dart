@@ -21,7 +21,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(_load);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _load());
   }
 
   Future<void> _load() async {
@@ -56,7 +56,26 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                     final product = _items[index];
                     return ProductCard(
                       product: product,
-                      onAdd: () => state.addToCart(product),
+                      onAdd: () {
+                        state.addToCart(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${product.title} added to cart'),
+                            duration: const Duration(seconds: 1),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
+                      onFavourite: () async {
+                        if (state.isFavourite(product.id)) {
+                          await state.removeFromFavourites(product);
+                        } else {
+                          await state.addToFavourites(product);
+                        }
+                        // لا نظهر SnackBar هنا لتجنب تكرار الرسائل المزعجة
+                        // التغيير البصري (القلب الأحمر) يكفي
+                      },
+                      isFavourite: state.isFavourite(product.id),
                       onOpen: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => ProductDetailsScreen(product: product),

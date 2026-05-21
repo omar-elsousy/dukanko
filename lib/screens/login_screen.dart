@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Theme.of(context)
                               .colorScheme
                               .primary
-                              .withValues(alpha: .25),
+                              .withOpacity(0.25),
                           blurRadius: 30,
                           offset: const Offset(0, 16),
                         ),

@@ -6,6 +6,8 @@ class ApiConfig {
     defaultValue: 'http://10.1.104.82:81/Online-application/public/api',
   );
 
+  static String get baseImageUrl => baseUrl.replaceFirst('/api', '');
+
   static Uri uri(String path, [Map<String, dynamic>? query]) {
     final normalizedBase = baseUrl.endsWith('/')
         ? baseUrl.substring(0, baseUrl.length - 1)
@@ -31,5 +33,18 @@ class ApiEndpoints {
   static const String logout = '/logout';
   static const String categories = '/getCategories';
   static const String sections = '/getSections';
-  static const String productsByCategory = '/getProductsByCategory';
+  static const String productsByCategory = '/getProducts';
+  static const String productDetails = '/getProductDetails';
+  static const String addToCart = '/addToCart';
+  static const String getCart = '/getCart';
+  static const String removeFromCart = '/removeFromCart';
+  static const String placeOrder = '/placeOrder';
+  static const String getOrders = '/getOrders';
+  static const String getOrderDetails = '/getOrderDetails';
+  static const String getUserOrdersHistory = '/getUserOrdersHistory';
+  static const String cancelOrder = '/cancelOrder';
+  static const String getTarget = '/getTarget';
+  static const String addToFavourites = '/addToFavourites';
+  static const String removeFromFavourites = '/removeFromFavourites';
+  static const String getFavourites = '/getFavourites';
 }
