@@ -103,7 +103,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: state.isLoading ? null : () {
+                        onPressed: (state.isLoading || state.isInCart(item.id)) ? null : () {
                           state.addToCart(item);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -113,8 +113,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           );
                         },
-                        icon: const Icon(Icons.add_shopping_cart),
-                        label: const Text('ADD TO CART'),
+                        icon: Icon(state.isInCart(item.id) ? Icons.check_circle_outline : Icons.add_shopping_cart),
+                        label: Text(state.isInCart(item.id) ? 'ALREADY IN CART' : 'ADD TO CART'),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(16),
                           textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),

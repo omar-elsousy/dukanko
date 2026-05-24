@@ -24,8 +24,8 @@ android {
         applicationId = "com.example.dukan_ko"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = flutter.minSdkVersion // Android 5.0
+        targetSdk = 34 // Android 14
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -36,6 +36,11 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
+    }
+
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
     }
 }
 

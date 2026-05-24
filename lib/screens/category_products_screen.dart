@@ -57,6 +57,16 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                     return ProductCard(
                       product: product,
                       onAdd: () {
+                        if (state.isInCart(product.id)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Already exists in the cart'),
+                              duration: Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                          return;
+                        }
                         state.addToCart(product);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -76,6 +86,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                         // التغيير البصري (القلب الأحمر) يكفي
                       },
                       isFavourite: state.isFavourite(product.id),
+                      isInCart: state.isInCart(product.id),
                       onOpen: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => ProductDetailsScreen(product: product),

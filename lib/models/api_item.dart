@@ -77,12 +77,19 @@ List<ApiItem> parseItems(dynamic payload) {
 List<dynamic> _extractList(dynamic payload) {
   if (payload is List) return payload;
   if (payload is Map<String, dynamic>) {
-    for (final key in ['data', 'items', 'products', 'categories', 'orders']) {
-      final value = payload[key];
-      if (value is List) return value;
-      if (value is Map<String, dynamic>) {
-        final nested = _extractList(value);
-        if (nested.isNotEmpty) return nested;
+    final queue = [payload];
+    while (queue.isNotEmpty) {
+      final current = queue.removeAt(0);
+      for (final key in ['data', 'items', 'products', 'categories', 'orders']) {
+        final value = current[key];
+        if (value is List) return value;
+        if (value is Map<String, dynamic>) {
+          queue.add(value);
+        }
+      }
+      // إذا لم نجد الكلمات المفتاحية، نبحث في أي List موجودة
+      for (final value in current.values) {
+        if (value is List) return value;
       }
     }
   }

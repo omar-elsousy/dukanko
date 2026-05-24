@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../controllers/app_scope.dart';
 import '../../widgets/app_error_banner.dart';
-import '../home_screen.dart';
+import '../../utils/app_dialogs.dart';
 import '../order_details_screen.dart';
 
 class CartTab extends StatelessWidget {
@@ -44,7 +44,7 @@ class CartTab extends StatelessWidget {
                                     icon: Icon(Icons.remove_circle_outline, color: state.isLoading ? Colors.grey : Theme.of(context).colorScheme.primary, size: 28),
                                   ),
                                   InkWell(
-                                    onTap: state.isLoading ? null : () => HomeScreen.showQuantityDialog(context, state, product, line.quantity),
+                                    onTap: state.isLoading ? null : () => AppDialogs.showQuantityDialog(context, state, product, line.quantity),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 4),
                                       child: Text(

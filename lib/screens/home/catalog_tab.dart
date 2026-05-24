@@ -19,13 +19,6 @@ class _CatalogTabState extends State<CatalogTab> {
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
     
-    // مسح أي رسالة خطأ قديمة عند بناء الواجهة لتجنب بقاء الـ Banner
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (state.error != null && !state.isLoading) {
-         state.clearError();
-      }
-    });
-
     final filteredCategories = state.categories
         .where((item) => item.title.toLowerCase().contains(query.toLowerCase()))
         .toList();

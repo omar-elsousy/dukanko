@@ -36,6 +36,10 @@ class AppState extends ChangeNotifier {
     return favourites.any((p) => p.id == productId);
   }
 
+  bool isInCart(String productId) {
+    return cart.any((line) => line.product.id == productId);
+  }
+
   void clearError() {
     if (error != null) {
       error = null;
@@ -88,7 +92,6 @@ class AppState extends ChangeNotifier {
         apiClient.get(ApiEndpoints.getTarget).catchError((_) => {'data': {}}),
         apiClient.get(ApiEndpoints.getFavourites).catchError((_) => []),
       ]);
-
       sections..clear()..addAll(parseItems(results[0]));
       categories..clear()..addAll(parseItems(results[1]));
 
@@ -113,8 +116,6 @@ class AppState extends ChangeNotifier {
       }
 
       favourites..clear()..addAll(parseItems(results[6]));
-      
-      isBootstrapped = true;
     });
     
     _isFetching = false;
@@ -374,12 +375,15 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> _guard(Future<void> Function() action) async {
-    if (isLoading) return; // منع التداخل
+    if (isLoading) return; 
     isLoading = true;
     error = null;
     notifyListeners();
     try {
       await action();
+      // إذا اكتمل التحميل الأساسي بنجاح أو حتى جزئياً نعتبره bootstrapped
+      // لمنع المحاولات اللانهائية فيdidChangeDependencies
+      isBootstrapped = true;
     } catch (e) {
       error = e.toString();
       debugPrint('Error in AppState: $e');

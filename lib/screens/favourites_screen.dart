@@ -28,8 +28,19 @@ class FavouritesScreen extends StatelessWidget {
                 return ProductCard(
                   product: product,
                   isFavourite: true,
+                  isInCart: state.isInCart(product.id),
                   onFavourite: () => state.removeFromFavourites(product),
                   onAdd: () {
+                    if (state.isInCart(product.id)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Already exists in the cart'),
+                          duration: Duration(seconds: 2),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                      return;
+                    }
                     state.addToCart(product);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
