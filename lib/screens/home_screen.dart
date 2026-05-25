@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dukanko'),
+        title: const Text('Mansour'),
         actions: [
           IconButton(
             tooltip: 'Refresh',

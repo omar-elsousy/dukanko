@@ -20,7 +20,7 @@ class DukankoApp extends StatelessWidget {
     return AppScope(
       state: state,
       child: MaterialApp(
-        title: 'Dukanko',
+        title: 'Mansour',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         home: const _AuthGate(),
